@@ -1,0 +1,96 @@
+{
+  "meta": {
+    "name": "",
+    "supportedLanguages": ["en", "zh", "ja"],
+    "defaultLanguage": "en",
+    "themeColor": "#0056b3",
+    "analytics": {
+      "matomo": {
+        "enabled": false,
+        "url": "",
+        "siteId": "",
+        "cookieDomain": "",
+        "domains": []
+      }
+    }
+  },
+  "navbar": {
+    "brand": ""
+  },
+  "sections": [
+    {
+      "id": "about",
+      "type": "about",
+      "enabled": true,
+      "order": 0,
+      "data": {
+        "photo": "",
+        "name": { "en": "", "zh": "", "ja": "" },
+        "title": { "en": "", "zh": "", "ja": "" },
+        "bio": { "en": "", "zh": "", "ja": "" },
+        "socialLinks": []
+      }
+    },
+    {
+      "id": "experience",
+      "type": "timeline",
+      "enabled": true,
+      "order": 1,
+      "data": {
+        "title": { "en": "", "zh": "", "ja": "" },
+        "items": []
+      }
+    },
+    {
+      "id": "research",
+      "type": "card-grid",
+      "enabled": true,
+      "order": 2,
+      "data": {
+        "title": { "en": "", "zh": "", "ja": "" },
+        "items": []
+      }
+    },
+    {
+      "id": "work-experience",
+      "type": "project-grid",
+      "enabled": true,
+      "order": 3,
+      "data": {
+        "title": { "en": "", "zh": "", "ja": "" },
+        "items": []
+      }
+    },
+    {
+      "id": "personal-projects",
+      "type": "card-grid",
+      "enabled": true,
+      "order": 4,
+      "data": {
+        "title": { "en": "", "zh": "", "ja": "" },
+        "items": []
+      }
+    },
+    {
+      "id": "contact",
+      "type": "contact",
+      "enabled": true,
+      "order": 99,
+      "data": {
+        "title": { "en": "", "zh": "", "ja": "" },
+        "email": "",
+        "contactText": { "en": "", "zh": "", "ja": "" },
+        "languages": [],
+        "additionalLinks": []
+      }
+    }
+  ],
+  "footer": {
+    "text": "",
+    "copyright": {
+      "startYear": null,
+      "name": "",
+      "url": ""
+    }
+  }
+}
