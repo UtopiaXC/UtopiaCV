@@ -6,11 +6,14 @@ import EditorTopbar from './components/EditorTopbar.vue'
 import ModuleList from './components/ModuleList.vue'
 import SectionEditor from './components/editors/SectionEditor.vue'
 import PreviewPanel from './components/PreviewPanel.vue'
+import InitialSetup from './components/InitialSetup.vue'
+import LanguagePicker from './components/LanguagePicker.vue'
+import { getNativeLangNameOnly } from './utils/lang.js'
 
 const { t } = useEditorI18n()
 
-// Deep clone default data
-const cvData = ref(JSON.parse(JSON.stringify(defaultCvData)))
+const isInitialized = ref(false)
+const cvData = ref(null)
 const activeSection = ref(null) // section id or 'global'
 const previewKey = ref(0)
 
@@ -21,6 +24,7 @@ provide('activeSection', activeSection)
 // Debounced preview refresh
 let refreshTimer = null
 function refreshPreview() {
+  if (!cvData.value) return
   clearTimeout(refreshTimer)
   refreshTimer = setTimeout(() => {
     previewKey.value++
@@ -37,6 +41,7 @@ function selectSection(sectionId) {
 
 function importJson(data) {
   cvData.value = data
+  isInitialized.value = true
   activeSection.value = null
   nextTick(() => refreshPreview())
 }
@@ -46,13 +51,28 @@ watch(activeSection, (id) => {
   if (id === 'global') {
     currentSection.value = null
   } else {
-    currentSection.value = cvData.value.sections.find(s => s.id === id) || null
+    currentSection.value = cvData.value?.sections.find(s => s.id === id) || null
   }
 })
+
+function addAppLang(code) {
+  if (code && !cvData.value.meta.supportedLanguages.includes(code)) {
+    cvData.value.meta.supportedLanguages.push(code)
+  }
+}
+
+function removeAppLang(code) {
+  cvData.value.meta.supportedLanguages = cvData.value.meta.supportedLanguages.filter(l => l !== code)
+  if (cvData.value.meta.defaultLanguage === code) {
+    cvData.value.meta.defaultLanguage = cvData.value.meta.supportedLanguages[0] || ''
+  }
+}
 </script>
 
 <template>
-  <div class="editor-layout">
+  <InitialSetup v-if="!isInitialized" @complete="importJson" />
+
+  <div class="editor-layout" v-else>
     <EditorTopbar :cvData="cvData" @import-json="importJson" />
 
     <div class="editor-sidebar">
@@ -79,17 +99,19 @@ watch(activeSection, (id) => {
         <div class="form-group">
           <label class="form-label">{{ t('global.default_lang') }}</label>
           <select class="form-select" v-model="cvData.meta.defaultLanguage">
-            <option v-for="lang in cvData.meta.supportedLanguages" :key="lang" :value="lang">{{ lang.toUpperCase() }}</option>
+            <option v-for="lang in cvData.meta.supportedLanguages" :key="lang" :value="lang">{{ getNativeLangNameOnly(lang) || lang }}</option>
           </select>
         </div>
 
         <div class="form-group">
           <label class="form-label">{{ t('global.supported_langs') }}</label>
-          <input
-            class="form-input"
-            :value="cvData.meta.supportedLanguages.join(', ')"
-            @change="(e) => cvData.meta.supportedLanguages = e.target.value.split(',').map(s => s.trim()).filter(Boolean)"
-          />
+          <div class="tags-container" style="margin-bottom:8px; display:flex; gap:8px; flex-wrap:wrap;">
+            <span class="tech-tag" style="padding:4px 8px; border-radius:4px; font-size:13px; display:inline-flex; align-items:center; gap:6px;" v-for="lang in cvData.meta.supportedLanguages" :key="lang">
+              {{ getNativeLangNameOnly(lang) || lang }} 
+              <span style="cursor:pointer; font-weight:bold" class="tag-remove" @click="removeAppLang(lang)">×</span>
+            </span>
+          </div>
+          <LanguagePicker @add="addAppLang" />
         </div>
 
         <hr class="divider" />

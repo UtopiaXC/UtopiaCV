@@ -6,10 +6,21 @@ const currentLocale = ref(localStorage.getItem('editor-locale') || 'en')
 const messages = {
   en: {
     // Topbar
-    'topbar.logo': 'CV Builder',
+    'topbar.logo': 'Utopia CV',
     'topbar.import': 'Import JSON',
     'topbar.save': 'Save JSON',
     'topbar.generate': 'Generate HTML',
+
+    // Initial Setup
+    'setup.title': 'Welcome to Utopia CV',
+    'setup.import_btn': 'Import JSON',
+    'setup.scratch_btn': 'Start from Scratch',
+    'setup.basic_info': 'Basic Information',
+    'setup.brand_name': 'Title (Name)',
+    'setup.supported_langs': 'Supported Languages (comma separated)',
+    'setup.default_lang': 'Default Language',
+    'setup.start_btn': 'Start Editing',
+    'setup.or': 'OR',
 
     // Module List
     'modules.title': 'Modules',
@@ -39,7 +50,7 @@ const messages = {
     // Global Settings
     'global.title': '⚙️ Global Settings',
     'global.subtitle': 'Site-wide configuration',
-    'global.name_brand': 'Name / Brand',
+    'global.name_brand': 'Title Name',
     'global.default_lang': 'Default Language',
     'global.supported_langs': 'Supported Languages (comma separated)',
     'global.footer_text': 'Footer Text',
@@ -154,10 +165,21 @@ const messages = {
   },
   zh: {
     // Topbar
-    'topbar.logo': 'CV 构建器',
+    'topbar.logo': 'Utopia CV',
     'topbar.import': '导入 JSON',
     'topbar.save': '保存 JSON',
     'topbar.generate': '生成 HTML',
+
+    // Initial Setup
+    'setup.title': '欢迎使用 Utopia CV',
+    'setup.import_btn': '导入 JSON',
+    'setup.scratch_btn': '从头开始',
+    'setup.basic_info': '基本信息',
+    'setup.brand_name': '标题（姓名）',
+    'setup.supported_langs': '支持的语言',
+    'setup.default_lang': '默认语言',
+    'setup.start_btn': '开始编辑',
+    'setup.or': '或',
 
     // Module List
     'modules.title': '模块',
@@ -187,9 +209,9 @@ const messages = {
     // Global Settings
     'global.title': '⚙️ 全局设置',
     'global.subtitle': '站点全局配置',
-    'global.name_brand': '姓名 / 品牌',
+    'global.name_brand': '标题姓名',
     'global.default_lang': '默认语言',
-    'global.supported_langs': '支持的语言（逗号分隔）',
+    'global.supported_langs': '支持的语言',
     'global.footer_text': '页脚文本',
     'global.copyright_name': '版权所有者',
     'global.copyright_url': '版权链接',

@@ -1,4 +1,5 @@
 // HTML template functions for each section type
+import { getNativeLangNameOnly } from '../utils/lang.js';
 
 /**
  * Get localized text for the default language, and build i18n key mapping
@@ -28,19 +29,17 @@ function escapeHtml(str) {
 export function renderNavbar(cvData, langMap) {
   const defaultLang = cvData.meta.defaultLanguage || 'en';
   const sections = cvData.sections.filter(s => s.enabled).sort((a, b) => a.order - b.order);
-  const langNames = {
-    en: 'English', zh: '中文', ja: '日本語', ko: '한국어',
-    fr: 'Français', de: 'Deutsch', es: 'Español',
-  };
 
-  const navItems = sections.map(section => {
-    const key = `nav_${section.id}`;
-    const label = t(section.data.title, key, defaultLang, langMap);
-    return `<li><a href="#${section.id}" class="nav-link" data-i18n-key="${key}">${escapeHtml(label)}</a></li>`;
-  }).join('\n            ');
+  const navItems = sections
+    .filter(section => section.type !== 'about')
+    .map(section => {
+      const key = `nav_${section.id}`;
+      const label = t(section.data.title, key, defaultLang, langMap);
+      return `<li><a href="#${section.id}" class="nav-link" data-i18n-key="${key}">${escapeHtml(label)}</a></li>`;
+    }).join('\n            ');
 
   const langOptions = cvData.meta.supportedLanguages.map(lang =>
-    `<li data-lang="${lang}">${langNames[lang] || lang}</li>`
+    `<li data-lang="${lang}">${getNativeLangNameOnly(lang) || lang}</li>`
   ).join('\n                    ');
 
   return `<header class="navbar">
@@ -86,7 +85,7 @@ export function renderAbout(section, defaultLang, langMap) {
 
   return `<section id="${section.id}">
         <div class="container">
-            <div class="about-grid">
+            <div class="${d.photo ? 'about-grid' : 'about-grid no-photo'}">
                 ${photoHtml}
                 <div class="about-text">
                     <h1 data-i18n-key="about_name">${name}</h1>
@@ -123,7 +122,7 @@ export function renderTimeline(section, defaultLang, langMap) {
                         </a>`
       : '';
 
-    return `<div class="card">
+    return `<div class="${item.logo ? 'card' : 'card no-logo'}">
                     ${logoHtml}
                     <div class="card-content">
                         <div class="card-header">

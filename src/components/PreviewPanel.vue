@@ -2,6 +2,7 @@
 import { ref, watch, computed } from 'vue'
 import { generateHtml } from '../generator/generator.js'
 import { useEditorI18n } from '../i18n/editor-i18n.js'
+import { getNativeLangNameOnly } from '../utils/lang.js'
 
 const { t } = useEditorI18n()
 
@@ -63,7 +64,7 @@ function onIframeLoad() {
     <div class="preview-toolbar">
       <span class="text-muted" style="font-size:12px;font-weight:600;">{{ t('preview.title') }}</span>
       <select class="form-select" style="width:auto;padding:4px 8px;font-size:12px;" v-model="previewLang" @change="updatePreview">
-        <option v-for="lang in supportedLangs" :key="lang" :value="lang">{{ lang.toUpperCase() }}</option>
+        <option v-for="lang in supportedLangs" :key="lang" :value="lang">{{ getNativeLangNameOnly(lang) || lang }}</option>
       </select>
       <button
         class="btn btn-sm"

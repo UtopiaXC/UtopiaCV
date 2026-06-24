@@ -145,6 +145,7 @@ html.dark-mode .theme-toggle .fa-moon { display: none; }
 /* --- About Section & Tooltips --- */
 #about { padding-top: 60px; }
 .about-grid { display: grid; grid-template-columns: 180px 1fr; gap: 40px; align-items: flex-start; }
+.about-grid.no-photo { grid-template-columns: 1fr; }
 .about-photo { width: 100%; border-radius: 8px; border: 3px solid var(--border-color); }
 .about-text h1 { font-size: 2.5rem; margin-bottom: 5px; }
 .about-text .title { font-size: 1.1rem; color: #888; margin-bottom: 20px; }
@@ -177,6 +178,7 @@ html.dark-mode .theme-toggle .fa-moon { display: none; }
     transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
     display: grid; grid-template-columns: 50px 1fr; gap: 20px; align-items: flex-start;
 }
+.card.no-logo { grid-template-columns: 1fr; }
 .card:hover { transform: translateY(-5px); box-shadow: var(--card-shadow); }
 .card-logo { width: 50px; height: 50px; border-radius: 50%; border: 1px solid var(--border-color); object-fit: contain; }
 .card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 15px; margin-bottom: 10px; }
