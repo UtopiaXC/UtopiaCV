@@ -279,10 +279,11 @@ export function renderFooter(cvData) {
   const f = cvData.footer || {};
   const copyright = f.copyright || {};
   const startYear = copyright.startYear ? `${escapeHtml(copyright.startYear)}-` : '';
+  const footerTextHtml = f.text ? `\n        <p>${escapeHtml(f.text)}</p>` : '';
 
   return `<footer class="site-footer">
     <div class="container">
-        <p>${escapeHtml(f.text || '')}</p>
+        <p>Powered By <a href="https://github.com/UtopiaXC/UtopiaCV" target="_blank">UtopiaCV</a></p>${footerTextHtml}
         <p>Copyright &copy; ${startYear}<span id="current-year"></span> <a href="${escapeHtml(copyright.url || '#')}" target="_blank" rel="noopener noreferrer">${escapeHtml(copyright.name || '')}</a>. All rights reserved.</p>
     </div>
 </footer>`;
