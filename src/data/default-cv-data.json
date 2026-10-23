@@ -1,96 +1,281 @@
 {
   "meta": {
-    "name": "",
+    "name": "Alex Chen",
     "supportedLanguages": ["en", "zh", "ja"],
     "defaultLanguage": "en",
-    "themeColor": "#0056b3",
-    "analytics": {
-      "matomo": {
-        "enabled": false,
-        "url": "",
-        "siteId": "",
-        "cookieDomain": "",
-        "domains": []
-      }
-    }
+    "themeColor": "#0056b3"
+  },
+  "custom": {
+    "css": "",
+    "js": ""
   },
   "navbar": {
-    "brand": ""
+    "brand": "Alex Chen"
   },
   "sections": [
     {
       "id": "about",
+      "name": "关于我",
       "type": "about",
       "enabled": true,
       "order": 0,
       "data": {
         "photo": "",
-        "name": { "en": "", "zh": "", "ja": "" },
-        "title": { "en": "", "zh": "", "ja": "" },
-        "bio": { "en": "", "zh": "", "ja": "" },
-        "socialLinks": []
+        "name": {
+          "en": "Alex Chen",
+          "zh": "陈亚历",
+          "ja": "アレックス・チェン"
+        },
+        "title": {
+          "en": "Senior Full-Stack & Systems Engineer",
+          "zh": "资深全栈与系统工程师",
+          "ja": "シニアフルスタック・システムエンジニア"
+        },
+        "bio": {
+          "en": "Passionate developer focused on building scalable cloud platforms, responsive developer tools, and intuitive web applications. Experienced in modern JavaScript/TypeScript, Go, and distributed systems.",
+          "zh": "专注于构建可扩展云平台、高效开发者工具与直观 Web 应用的技术专家。在现代 JavaScript/TypeScript、Go 及分布式系统领域拥有丰富实战经验。",
+          "ja": "スケーラブルなクラウドプラットフォーム、開発者向けツール、直感的なWebアプリケーションの構築に注力するソフトウェアエンジニア。"
+        },
+        "socialLinks": [
+          { "type": "link", "url": "https://github.com", "tooltip": "GitHub Profile", "icon": "fa-brands fa-github" },
+          { "type": "link", "url": "https://linkedin.com", "tooltip": "LinkedIn", "icon": "fa-brands fa-linkedin" },
+          { "type": "email", "url": "mailto:alex.chen@example.com", "tooltip": "Email Me", "icon": "fa-solid fa-envelope" },
+          { "type": "link", "url": "https://example.com", "tooltip": "Personal Website", "icon": "fa-solid fa-house" }
+        ]
       }
     },
     {
       "id": "experience",
+      "name": "工作经历",
       "type": "timeline",
       "enabled": true,
       "order": 1,
       "data": {
-        "title": { "en": "", "zh": "", "ja": "" },
-        "items": []
+        "title": {
+          "en": "Professional Experience",
+          "zh": "工作经历",
+          "ja": "職務経歴"
+        },
+        "items": [
+          {
+            "id": "item-1",
+            "logo": "",
+            "logoLink": "",
+            "title": {
+              "en": "Staff Software Engineer",
+              "zh": "主任软件工程师",
+              "ja": "スタッフエンジニア"
+            },
+            "institution": {
+              "en": "CloudTech Solutions Inc.",
+              "zh": "云智科技创新有限公司",
+              "ja": "クラウドテック株式会社"
+            },
+            "dateRange": "2023.01 - Present",
+            "description": {
+              "en": "Led the architecture and migration of a mission-critical microservices platform, improving throughput by 40% and reducing latency.",
+              "zh": "主导核心微服务平台的架构升级与重构迁移，吞吐量提升 40%，显著降低请求延迟。",
+              "ja": "ミッションクリティカルなマイクロサービス基盤の設計と刷新を主導し、スループットを40%向上。"
+            },
+            "department": {
+              "en": "Infrastructure & Platform Engineering",
+              "zh": "基础架构与平台工程部",
+              "ja": "インフラ・基盤開発部門"
+            },
+            "departmentLink": ""
+          },
+          {
+            "id": "item-2",
+            "logo": "",
+            "logoLink": "",
+            "title": {
+              "en": "Full-Stack Developer",
+              "zh": "全栈研发工程师",
+              "ja": "フルスタックエンジニア"
+            },
+            "institution": {
+              "en": "NextGen Web Labs",
+              "zh": "未来网络实验室",
+              "ja": "ネクストウェブ研究所"
+            },
+            "dateRange": "2020.06 - 2022.12",
+            "description": {
+              "en": "Designed and deployed modern single-page applications and backend APIs serving over 500k monthly active users.",
+              "zh": "独立设计并交付现代化单页应用及 RESTful/GraphQL 后端接口，月活用户超 50 万。",
+              "ja": "月間50万人以上のアクティブユーザーを誇るWebアプリケーションおよびAPIの開発に従事。"
+            },
+            "department": {
+              "en": "Product Engineering Team",
+              "zh": "产品工程团队",
+              "ja": "プロダクト开发部"
+            },
+            "departmentLink": ""
+          }
+        ]
       }
     },
     {
-      "id": "research",
+      "id": "projects",
+      "name": "项目经验",
       "type": "card-grid",
       "enabled": true,
       "order": 2,
       "data": {
-        "title": { "en": "", "zh": "", "ja": "" },
-        "items": []
+        "title": {
+          "en": "Featured Projects & Open Source",
+          "zh": "开源项目与研究",
+          "ja": "プロジェクト & オープンソース"
+        },
+        "items": [
+          {
+            "id": "card-1",
+            "title": {
+              "en": "Distributed Task Scheduler",
+              "zh": "高可用分布式任务调度引擎",
+              "ja": "分散型タスクスケジューラ"
+            },
+            "description": {
+              "en": "Lightweight, fault-tolerant distributed cron scheduler with Raft consensus and zero downtime failover.",
+              "zh": "基于 Raft 一致性协议的轻量级容错定时调度系统，支持毫秒级无感故障转移。",
+              "ja": "Raft合意アルゴリズムを採用した軽量・耐障害性の高い分散タスク管理エンジン。"
+            },
+            "links": [
+              {
+                "label": { "en": "GitHub Repository", "zh": "GitHub 源码", "ja": "GitHub リポジトリ" },
+                "url": "https://github.com",
+                "icon": "fa-brands fa-github"
+              },
+              {
+                "label": { "en": "Live Demo", "zh": "在线演示", "ja": "デモサイト" },
+                "url": "https://example.com",
+                "icon": "fa-solid fa-globe"
+              }
+            ]
+          },
+          {
+            "id": "card-2",
+            "title": {
+              "en": "UtopiaCV Resume Engine",
+              "zh": "UtopiaCV 简历生成器",
+              "ja": "UtopiaCV レジュメジェネレーター"
+            },
+            "description": {
+              "en": "Pure static single-file multilingual resume generator with real-time editing and dark mode support.",
+              "zh": "纯静态单文件多语言简历生成与实时编辑系统，支持一键导出与深浅色模式自适应。",
+              "ja": "多言語対応・リアルタイム編集可能なシングルファイル履歴書作成ツール。"
+            },
+            "links": [
+              {
+                "label": { "en": "Documentation", "zh": "使用文档", "ja": "ドキュメント" },
+                "url": "https://example.com",
+                "icon": "fa-solid fa-book"
+              }
+            ]
+          }
+        ]
       }
     },
     {
-      "id": "work-experience",
+      "id": "skills",
+      "name": "专业技能",
       "type": "project-grid",
       "enabled": true,
       "order": 3,
       "data": {
-        "title": { "en": "", "zh": "", "ja": "" },
-        "items": []
-      }
-    },
-    {
-      "id": "personal-projects",
-      "type": "card-grid",
-      "enabled": true,
-      "order": 4,
-      "data": {
-        "title": { "en": "", "zh": "", "ja": "" },
-        "items": []
+        "title": {
+          "en": "Technical Expertise & Work",
+          "zh": "技术栈与核心技能",
+          "ja": "技術スタック & スキル"
+        },
+        "items": [
+          {
+            "id": "proj-1",
+            "title": {
+              "en": "Frontend & Interactive Engineering",
+              "zh": "前端工程与交互体验",
+              "ja": "フロントエンド & UIエンジニアリング"
+            },
+            "institution": {
+              "en": "Web Systems",
+              "zh": "Web 核心架构",
+              "ja": "Webシステム"
+            },
+            "dateRange": "Core Competency",
+            "description": {
+              "en": "Expert in modern frontend frameworks, responsive UI architecture, bundle optimizations, and state management.",
+              "zh": "精通现代化前端开发生态、组件化架构设计、性能构建调优与国际化多语言方案。",
+              "ja": "最新のフロントエンド技術、レスポンシブデザイン、バンドル最適化に精通。"
+            },
+            "techTags": ["Vue 3", "React", "TypeScript", "Vite", "TailwindCSS", "HTML5/CSS3"]
+          },
+          {
+            "id": "proj-2",
+            "title": {
+              "en": "Backend & Cloud Infrastructure",
+              "zh": "后端架构与云原生服务",
+              "ja": "バックエンド & クラウドインフラ"
+            },
+            "institution": {
+              "en": "Distributed Systems",
+              "zh": "分布式服务体系",
+              "ja": "分散システム"
+            },
+            "dateRange": "Core Competency",
+            "description": {
+              "en": "Designing resilient microservices, high concurrency caching, and scalable CI/CD automation pipelines.",
+              "zh": "擅长高并发分布式服务设计、高可用缓存架构以及自动化 CI/CD 流水线构建。",
+              "ja": "高可用なマイクロサービス、キャッシュアーキテクチャ、CI/CDパイプラインの構築。"
+            },
+            "techTags": ["Go", "Node.js", "Docker", "Kubernetes", "PostgreSQL", "Redis"]
+          }
+        ]
       }
     },
     {
       "id": "contact",
+      "name": "联系方式",
       "type": "contact",
       "enabled": true,
-      "order": 99,
+      "order": 4,
       "data": {
-        "title": { "en": "", "zh": "", "ja": "" },
-        "email": "",
-        "contactText": { "en": "", "zh": "", "ja": "" },
-        "languages": [],
-        "additionalLinks": []
+        "title": {
+          "en": "Contact & Languages",
+          "zh": "联系方式与语言能力",
+          "ja": "連絡先 & 言語能力"
+        },
+        "email": "alex.chen@example.com",
+        "contactText": {
+          "en": "I am always open to discussing new opportunities, open-source projects, and technical collaborations.",
+          "zh": "欢迎随时通过邮件与我联系，交流新机会、开源项目或技术合作。",
+          "ja": "新しい機会やオープンソースプロジェクトについて、お気軽にメールでご連絡ください。"
+        },
+        "languages": [
+          {
+            "name": { "en": "English", "zh": "英语", "ja": "英語" },
+            "level": { "en": "Full Professional Proficiency", "zh": "工作精通", "ja": "ビジネスレベル" }
+          },
+          {
+            "name": { "en": "Chinese (Mandarin)", "zh": "中文（普通话）", "ja": "中国語（標準語）" },
+            "level": { "en": "Native Speaker", "zh": "母语", "ja": "ネイティブ" }
+          },
+          {
+            "name": { "en": "Japanese", "zh": "日语", "ja": "日本語" },
+            "level": { "en": "Conversational (JLPT N2)", "zh": "日常流利交流（JLPT N2）", "ja": "日常会話レベル（JLPT N2）" }
+          }
+        ],
+        "additionalLinks": [
+          { "label": "Blog", "url": "https://example.com/blog" },
+          { "label": "Portfolio", "url": "https://example.com/portfolio" }
+        ]
       }
     }
   ],
   "footer": {
-    "text": "",
+    "text": "Generated by UtopiaCV - Open Source Multilingual Resume Builder",
     "copyright": {
-      "startYear": null,
-      "name": "",
-      "url": ""
+      "startYear": 2024,
+      "name": "Alex Chen",
+      "url": "https://example.com"
     }
   }
 }

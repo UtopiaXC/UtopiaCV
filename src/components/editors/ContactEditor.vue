@@ -6,57 +6,81 @@ const { t } = useEditorI18n()
 
 const props = defineProps({
   section: Object,
-  languages: Array
+  languages: { type: Array, default: () => ['en'] }
 })
 
 const emit = defineEmits(['update:section'])
 
-function clone() { return JSON.parse(JSON.stringify(props.section)) }
-
-function update(path, value) {
-  const s = clone()
-  const keys = path.split('.')
-  let obj = s
-  for (let i = 0; i < keys.length - 1; i++) obj = obj[keys[i]]
-  obj[keys[keys.length - 1]] = value
-  emit('update:section', s)
+function updateField(field, value) {
+  emit('update:section', {
+    ...props.section,
+    data: {
+      ...props.section.data,
+      [field]: value
+    }
+  })
 }
 
-// Languages
+function updateTitle(val) {
+  updateField('title', val)
+}
+
+function updateContactText(val) {
+  updateField('contactText', val)
+}
+
+// Languages skills
 function addLanguage() {
-  const s = clone()
-  if (!s.data.languages) s.data.languages = []
-  s.data.languages.push({ name: { en: '' }, level: { en: '' } })
-  emit('update:section', s)
+  const current = [...(props.section.data.languages || [])]
+  const initI18n = (def = '') => {
+    const o = {}
+    props.languages.forEach(l => { o[l] = def })
+    return o
+  }
+
+  current.push({
+    name: initI18n('Language'),
+    level: initI18n('Native / Fluent / Professional')
+  })
+  updateField('languages', current)
 }
 
 function removeLanguage(idx) {
-  const s = clone(); s.data.languages.splice(idx, 1); emit('update:section', s)
+  const current = [...(props.section.data.languages || [])]
+  current.splice(idx, 1)
+  updateField('languages', current)
 }
 
 function updateLanguage(idx, field, value) {
-  const s = clone(); s.data.languages[idx][field] = value; emit('update:section', s)
+  const current = [...(props.section.data.languages || [])]
+  if (!current[idx]) return
+  current[idx] = { ...current[idx], [field]: value }
+  updateField('languages', current)
 }
 
 // Additional links
 function addLink() {
-  const s = clone()
-  if (!s.data.additionalLinks) s.data.additionalLinks = []
-  s.data.additionalLinks.push({ label: '', url: '' })
-  emit('update:section', s)
+  const current = [...(props.section.data.additionalLinks || [])]
+  current.push({ label: '', url: '' })
+  updateField('additionalLinks', current)
 }
 
 function removeLink(idx) {
-  const s = clone(); s.data.additionalLinks.splice(idx, 1); emit('update:section', s)
+  const current = [...(props.section.data.additionalLinks || [])]
+  current.splice(idx, 1)
+  updateField('additionalLinks', current)
 }
 
 function updateLink(idx, field, value) {
-  const s = clone(); s.data.additionalLinks[idx][field] = value; emit('update:section', s)
+  const current = [...(props.section.data.additionalLinks || [])]
+  if (!current[idx]) return
+  current[idx] = { ...current[idx], [field]: value }
+  updateField('additionalLinks', current)
 }
 </script>
 
 <template>
-  <div>
+  <div v-if="section && section.data">
     <div class="editor-panel-header">
       <div>
         <div class="editor-panel-title">{{ t('contact.title') }}</div>
@@ -64,36 +88,117 @@ function updateLink(idx, field, value) {
       </div>
     </div>
 
-    <I18nField :label="t('contact.section_title')" :modelValue="section.data.title" @update:modelValue="update('data.title', $event)" :languages="languages" />
+    <I18nField
+      :label="t('contact.section_title')"
+      :modelValue="section.data.title || {}"
+      @update:modelValue="updateTitle"
+      :languages="languages"
+    />
 
     <div class="form-group">
       <label class="form-label">{{ t('contact.email') }}</label>
-      <input class="form-input" :value="section.data.email" @input="update('data.email', $event.target.value)" />
+      <input
+        class="form-input"
+        :value="section.data.email || ''"
+        @input="updateField('email', $event.target.value)"
+        placeholder="your.email@example.com"
+      />
     </div>
 
-    <I18nField :label="t('contact.contact_text')" type="textarea" :modelValue="section.data.contactText" @update:modelValue="update('data.contactText', $event)" :languages="languages" />
+    <I18nField
+      :label="t('contact.contact_text')"
+      type="textarea"
+      :modelValue="section.data.contactText || {}"
+      @update:modelValue="updateContactText"
+      :languages="languages"
+    />
 
     <hr class="divider" />
-    <div class="sidebar-section-title">{{ t('contact.language_skills') }}</div>
+    <div class="sidebar-section-title">{{ t('contact.language_skills') }} ({{ section.data.languages?.length || 0 }})</div>
 
-    <div v-for="(lang, idx) in (section.data.languages || [])" :key="idx" class="item-card" style="padding:12px;">
+    <div
+      v-for="(lang, idx) in (section.data.languages || [])"
+      :key="idx"
+      class="item-card"
+      style="padding:14px;"
+    >
       <div class="flex-between mb-8">
-        <span style="font-size:13px;font-weight:600;">{{ t('contact.language_n') }} {{ idx + 1 }}</span>
-        <button class="btn btn-sm btn-danger btn-icon" @click="removeLanguage(idx)" :title="t('common.delete')">✕</button>
+        <span style="font-size:13px; font-weight:600;">
+          {{ t('contact.language_n') }} #{{ idx + 1 }}
+        </span>
+        <button
+          type="button"
+          class="btn btn-sm btn-danger btn-icon"
+          @click="removeLanguage(idx)"
+          :title="t('common.delete')"
+        >
+          <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
       </div>
-      <I18nField :label="t('contact.lang_name')" :modelValue="lang.name" @update:modelValue="updateLanguage(idx, 'name', $event)" :languages="languages" />
-      <I18nField :label="t('contact.lang_level')" :modelValue="lang.level" @update:modelValue="updateLanguage(idx, 'level', $event)" :languages="languages" />
+      <I18nField
+        :label="t('contact.lang_name')"
+        :modelValue="lang.name || {}"
+        @update:modelValue="updateLanguage(idx, 'name', $event)"
+        :languages="languages"
+      />
+      <I18nField
+        :label="t('contact.lang_level')"
+        :modelValue="lang.level || {}"
+        @update:modelValue="updateLanguage(idx, 'level', $event)"
+        :languages="languages"
+      />
     </div>
-    <button class="add-section-btn" @click="addLanguage">{{ t('contact.add_language') }}</button>
+
+    <button type="button" class="add-section-btn" @click="addLanguage">
+      {{ t('contact.add_language') }}
+    </button>
 
     <hr class="divider" />
-    <div class="sidebar-section-title">{{ t('contact.additional_links') }}</div>
+    <div class="sidebar-section-title">{{ t('contact.additional_links') }} ({{ section.data.additionalLinks?.length || 0 }})</div>
 
-    <div v-for="(link, idx) in (section.data.additionalLinks || [])" :key="idx" class="link-item" style="grid-template-columns: 1fr 1fr auto;">
-      <input class="form-input" :value="link.label" @input="updateLink(idx, 'label', $event.target.value)" :placeholder="t('common.label')" />
-      <input class="form-input" :value="link.url" @input="updateLink(idx, 'url', $event.target.value)" :placeholder="t('common.url')" />
-      <button class="btn btn-sm btn-danger btn-icon" @click="removeLink(idx)" :title="t('common.delete')">✕</button>
+    <div
+      v-for="(link, idx) in (section.data.additionalLinks || [])"
+      :key="idx"
+      class="link-item"
+      style="grid-template-columns: 1fr 1fr auto;"
+    >
+      <input
+        class="form-input"
+        :value="link.label || ''"
+        @input="updateLink(idx, 'label', $event.target.value)"
+        :placeholder="t('common.label')"
+      />
+      <input
+        class="form-input"
+        :value="link.url || ''"
+        @input="updateLink(idx, 'url', $event.target.value)"
+        :placeholder="t('common.url')"
+      />
+      <button
+        type="button"
+        class="btn btn-sm btn-danger btn-icon"
+        @click="removeLink(idx)"
+        :title="t('common.delete')"
+      >
+        <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
     </div>
-    <button class="add-section-btn" @click="addLink">{{ t('contact.add_link') }}</button>
+
+    <button type="button" class="add-section-btn" @click="addLink">
+      {{ t('contact.add_link') }}
+    </button>
   </div>
 </template>
+
+<style scoped>
+.icon-svg {
+  width: 13px;
+  height: 13px;
+}
+</style>

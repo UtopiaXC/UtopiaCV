@@ -1,26 +1,14 @@
 // CV Runtime Script - embedded into generated HTML
 // This is exported as a string template for the generator
 
-export function getCvRuntimeScript(langMap, supportedLangs) {
-  // langMap: { en: { key: val }, zh: { key: val }, ja: { key: val } }
-  // supportedLangs: ['en', 'zh', 'ja']
-  const langNames = {
-    en: 'English',
-    zh: '中文',
-    ja: '日本語',
-    ko: '한국어',
-    fr: 'Français',
-    de: 'Deutsch',
-    es: 'Español',
-  };
-
+export function getCvRuntimeScript(langMap, supportedLangs, defaultLang = 'en') {
   return `
 (function(){
   var _i18n = ${JSON.stringify(langMap)};
   var _supportedLangs = ${JSON.stringify(supportedLangs)};
-  var _langNames = ${JSON.stringify(langNames)};
+  var _defaultLang = ${JSON.stringify(defaultLang)};
 
-  document.addEventListener('DOMContentLoaded', function() {
+  function init() {
     var docEl = document.documentElement;
     var themeToggle = document.getElementById('theme-toggle');
     var langBtn = document.getElementById('lang-switcher-button');
@@ -35,6 +23,7 @@ export function getCvRuntimeScript(langMap, supportedLangs) {
       if (t === 'dark') docEl.classList.add('dark-mode');
       else docEl.classList.remove('dark-mode');
     }
+
     if (themeToggle) {
       var mq = window.matchMedia('(prefers-color-scheme: dark)');
       mq.addEventListener('change', function(e) {
@@ -50,27 +39,68 @@ export function getCvRuntimeScript(langMap, supportedLangs) {
 
     // i18n
     function applyTranslations(lang) {
-      var t = _i18n[lang];
+      var t = _i18n[lang] || _i18n[_defaultLang];
       if (!t) return;
       var els = document.querySelectorAll('[data-i18n-key]');
       els.forEach(function(el) {
         var k = el.getAttribute('data-i18n-key');
-        if (t[k]) el.innerHTML = t[k];
+        if (t[k] !== undefined && t[k] !== null) {
+          el.innerHTML = t[k];
+        }
       });
+      if (t['page_title']) {
+        document.title = t['page_title'];
+      }
     }
-    function setLanguage(lang) {
-      var eLang = _supportedLangs.indexOf(lang) >= 0 ? lang : 'en';
+
+    function setLanguage(lang, notifyParent) {
+      var eLang = _supportedLangs.indexOf(lang) >= 0 ? lang : _defaultLang;
       docEl.setAttribute('lang', eLang);
       localStorage.setItem('language', eLang);
       if (currentLangSpan) currentLangSpan.textContent = eLang.toUpperCase();
+      if (langMenu) {
+        var items = langMenu.querySelectorAll('li');
+        items.forEach(function(li) {
+          if (li.getAttribute('data-lang') === eLang) {
+            li.classList.add('active');
+          } else {
+            li.classList.remove('active');
+          }
+        });
+      }
       applyTranslations(eLang);
+
+      if (notifyParent !== false) {
+        try {
+          if (window.parent && window.parent !== window) {
+            window.parent.postMessage({ type: 'CV_LANG_CHANGE', lang: eLang }, '*');
+          }
+        } catch (e) {}
+      }
     }
 
+    // Expose helpers for direct control by preview panel
+    window.__setLanguage = function(l) { setLanguage(l, false); };
+    window.__setTheme = applyTheme;
+    window.__applyTranslations = applyTranslations;
+
+    // Determine initial language
     var urlParams = new URLSearchParams(window.location.search);
     var langFromUrl = urlParams.get('lang');
-    var navLang = navigator.language || 'en';
-    var initLang = langFromUrl || localStorage.getItem('language') || (navLang.startsWith('zh') ? 'zh' : (navLang.startsWith('ja') ? 'ja' : 'en'));
-    setLanguage(initLang);
+    var docLang = docEl.getAttribute('lang');
+
+    var isInsideIframe = false;
+    try { isInsideIframe = window.parent && window.parent !== window; } catch(e){}
+
+    var initLang = langFromUrl || docLang || _defaultLang;
+    if (!isInsideIframe) {
+      var storedLang = localStorage.getItem('language');
+      if (storedLang && _supportedLangs.indexOf(storedLang) >= 0) {
+        initLang = storedLang;
+      }
+    }
+
+    setLanguage(initLang, false);
 
     if (langBtn) {
       langBtn.addEventListener('click', function(e) {
@@ -82,8 +112,9 @@ export function getCvRuntimeScript(langMap, supportedLangs) {
     if (langMenu) {
       langMenu.addEventListener('click', function(e) {
         if (e.target.tagName === 'LI') {
-          setLanguage(e.target.getAttribute('data-lang'));
-          langBtn.classList.remove('active');
+          var targetLang = e.target.getAttribute('data-lang');
+          setLanguage(targetLang, true);
+          if (langBtn) langBtn.classList.remove('active');
           langMenu.classList.remove('show');
         }
       });
@@ -110,11 +141,28 @@ export function getCvRuntimeScript(langMap, supportedLangs) {
     // Close language menu on outside click
     document.addEventListener('click', function() {
       if (langMenu && langMenu.classList.contains('show')) {
-        langBtn.classList.remove('active');
+        if (langBtn) langBtn.classList.remove('active');
         langMenu.classList.remove('show');
       }
     });
-  });
+
+    // Listen for postMessage from parent
+    window.addEventListener('message', function(ev) {
+      if (ev.data && ev.data.type === 'SET_PREVIEW_LANG') {
+        setLanguage(ev.data.lang, false);
+      }
+      if (ev.data && ev.data.type === 'SET_PREVIEW_THEME') {
+        applyTheme(ev.data.theme);
+      }
+    });
+  }
+
+  // Handle both normal document load and dynamic doc.write load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 })();
 `;
 }

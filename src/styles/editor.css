@@ -59,7 +59,7 @@ body {
 /* --- Layout --- */
 .editor-layout {
   display: grid;
-  grid-template-columns: 340px 1fr;
+  grid-template-columns: clamp(420px, 32vw, 500px) 1fr;
   grid-template-rows: 56px 1fr;
   height: 100vh;
   width: 100vw;
@@ -333,6 +333,14 @@ body {
   resize: vertical;
   min-height: 80px;
   line-height: 1.6;
+}
+
+.code-textarea {
+  font-family: 'JetBrains Mono', Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  tab-size: 2;
+  white-space: pre;
 }
 
 .form-select {

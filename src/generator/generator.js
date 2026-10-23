@@ -9,19 +9,24 @@ import cvStyleRaw from './cv-style.css?raw';
  * @returns {string} - complete HTML string
  */
 export function generateHtml(cvData) {
-  const defaultLang = cvData.meta.defaultLanguage || 'en';
-  const langMap = {}; // will be populated by template renderers
+  if (!cvData) return '';
+  const defaultLang = cvData.meta?.defaultLanguage || 'en';
+  const supportedLangs = (cvData.meta?.supportedLanguages && cvData.meta.supportedLanguages.length > 0)
+    ? cvData.meta.supportedLanguages
+    : [defaultLang];
+
+  const langMap = {};
 
   // Initialize langMap for all supported languages
-  cvData.meta.supportedLanguages.forEach(lang => {
+  supportedLangs.forEach(lang => {
     langMap[lang] = {};
   });
 
   // Render navbar
-  const navbarHtml = renderNavbar(cvData, langMap);
+  const navbarHtml = renderNavbar(cvData, langMap, supportedLangs);
 
-  // Render sections
-  const enabledSections = cvData.sections
+  // Render sections (only enabled ones, sorted by order)
+  const enabledSections = (cvData.sections || [])
     .filter(s => s.enabled)
     .sort((a, b) => a.order - b.order);
 
@@ -31,47 +36,34 @@ export function generateHtml(cvData) {
       console.warn(`Unknown section type: ${section.type}`);
       return `<!-- Unknown section type: ${section.type} -->`;
     }
-    return renderer(section, defaultLang, langMap);
+    return renderer(section, defaultLang, langMap, supportedLangs);
   }).join('\n\n    ');
 
   // Render footer
   const footerHtml = renderFooter(cvData);
 
-  // Generate runtime script with i18n data
-  const runtimeScript = getCvRuntimeScript(langMap, cvData.meta.supportedLanguages);
-
-  // Matomo analytics script
-  let analyticsScript = '';
-  if (cvData.meta.analytics?.matomo?.enabled) {
-    const m = cvData.meta.analytics.matomo;
-    analyticsScript = `
-    <!-- Matomo -->
-    <script>
-        var _paq = window._paq = window._paq || [];
-        _paq.push(["setDocumentTitle", document.domain + "/" + document.title]);
-        _paq.push(["setCookieDomain", "${m.cookieDomain || ''}"]);
-        _paq.push(["setDomains", ${JSON.stringify(m.domains || [])}]);
-        _paq.push(["enableCrossDomainLinking"]);
-        _paq.push(["setDoNotTrack", true]);
-        _paq.push(['trackPageView']);
-        _paq.push(['enableLinkTracking']);
-        (function () {
-            var u = "${m.url}";
-            _paq.push(['setTrackerUrl', u + 'matomo.php']);
-            _paq.push(['setSiteId', '${m.siteId}']);
-            var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
-            g.async = true; g.src = u + 'matomo.js'; s.parentNode.insertBefore(g, s);
-        })();
-    </script>
-    <!-- End Matomo Code -->`;
-  }
-
   // Page title i18n key
-  const pageTitle = cvData.meta.name + ' - CV';
+  const pageTitle = (cvData.navbar?.brand || cvData.meta?.name || 'Resume') + ' - CV';
+  supportedLangs.forEach(lang => {
+    langMap[lang]['page_title'] = pageTitle;
+  });
+
+  // Generate runtime script with i18n data
+  const runtimeScript = getCvRuntimeScript(langMap, supportedLangs, defaultLang);
+
+  // Custom CSS injection
+  const customCssHtml = cvData.custom?.css
+    ? `\n    <!-- Custom CSS -->\n    <style id="custom-css">\n${cvData.custom.css}\n    </style>`
+    : '';
+
+  // Custom JS injection
+  const customJsHtml = cvData.custom?.js
+    ? `\n    <!-- Custom JavaScript -->\n    <script id="custom-js">\n${cvData.custom.js}\n    </script>`
+    : '';
 
   // Assemble full HTML
   const html = `<!DOCTYPE html>
-<html lang="${defaultLang}">
+<html lang="${escapeHtmlAttr(defaultLang)}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -79,8 +71,7 @@ export function generateHtml(cvData) {
     <title data-i18n-key="page_title">${escapeHtmlAttr(pageTitle)}</title>
     <style>
 ${cvStyleRaw}
-    </style>
-    ${analyticsScript}
+    </style>${customCssHtml}
     <script>
         (function () {
             var userTheme = localStorage.getItem('theme');
@@ -102,7 +93,7 @@ ${footerHtml}
 
 <script>
 ${runtimeScript}
-</script>
+</script>${customJsHtml}
 </body>
 </html>`;
 
